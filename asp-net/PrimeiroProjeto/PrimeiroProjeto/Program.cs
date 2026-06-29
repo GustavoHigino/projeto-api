@@ -1,4 +1,5 @@
 using PrimeiroProjeto.Services;
+using PrimeiroProjeto.Services.Impl;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddSingleton<MathService>();
-
+builder.Services.AddScoped<IPersonServices
+    , PersonServicesImpl>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
