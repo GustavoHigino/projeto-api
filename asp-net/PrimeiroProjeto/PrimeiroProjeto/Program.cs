@@ -1,3 +1,4 @@
+using PrimeiroProjeto.Configurations;
 using PrimeiroProjeto.Services;
 using PrimeiroProjeto.Services.Impl;
 
@@ -9,7 +10,8 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddSingleton<MathService>();
+builder.Services.AddDatabaseConfiguration
+    (builder.Configuration);
 builder.Services.AddScoped<IPersonServices
     , PersonServicesImpl>();
 var app = builder.Build();
