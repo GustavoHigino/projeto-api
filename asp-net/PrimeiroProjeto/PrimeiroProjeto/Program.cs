@@ -4,6 +4,7 @@ using PrimeiroProjeto.Services.Impl;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddSerilogLogging();
 // Add services to the container.
 
 builder.Services.AddControllers();

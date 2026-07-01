@@ -10,23 +10,34 @@ namespace PrimeiroProjeto.Controllers
     public class PersonController : ControllerBase
     {
         private IPersonServices _personServices;
+        private readonly ILogger<PersonController>
+            _logger;
         public PersonController
-            (IPersonServices personService)
+            (IPersonServices personService,
+            ILogger<PersonController> logger)
         {
+            _logger= logger;
             _personServices = personService;
         }
         [HttpGet]
         public IActionResult Get()
         {
+            _logger.LogInformation("Fetching all " +
+                "persons");
             return Ok(_personServices.FindAll());
         }
         [HttpGet("{id:long}")]
         public IActionResult Get(long id)
         {
+            _logger.LogInformation
+                ($"Fetching person" +
+                $" with ID {id}");
             var person = _personServices
                 .FindById(id);
             if (person== null)
             {
+                _logger.LogWarning($"Person with " +
+                    $"ID {id} not found");
                 return NotFound();
             }
             return Ok(person);
@@ -34,10 +45,15 @@ namespace PrimeiroProjeto.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Person person)
         {
+            _logger.LogInformation($"Creating new" +
+                $" person : {person.FirstName}");
             var personCreate = _personServices
                 .Create(person);
             if (person == null)
             {
+                _logger.LogError($"Failed to" +
+                    $" create person with name " +
+                    $"{person.FirstName}");
                 return NotFound();
             }
             return Ok(personCreate);
@@ -46,18 +62,29 @@ namespace PrimeiroProjeto.Controllers
         public IActionResult Put([FromBody] Person 
             person)
         {
+            _logger.LogInformation($"Updating " +
+                $"person with ID {person.Id}");
             var personChange = _personServices
                 .Update(person);
             if(personChange == null)
             {
+                _logger.LogError($"Failed to " +
+                    $"Update person with ID {person.Id}");
                 return NotFound();
             }
+            _logger.LogDebug($"Person updated " +
+                $"successfully : " +
+                $"{personChange.FirstName}");
             return Ok(personChange);
         }
         [HttpDelete("{id:int}")]
         public IActionResult Delete( int id)
         {
+            _logger.LogInformation($"Deleting " +
+                $"person with ID {id}");
             _personServices.Delete(id);
+            _logger.LogDebug($"Person with ID " +
+                $"{id} deleted successfully");
             return NoContent();
         }
     }
