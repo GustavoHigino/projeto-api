@@ -1,4 +1,6 @@
 using PrimeiroProjeto.Configurations;
+using PrimeiroProjeto.Repositories;
+using PrimeiroProjeto.Repositories.Impl;
 using PrimeiroProjeto.Services;
 using PrimeiroProjeto.Services.Impl;
 
@@ -15,6 +17,8 @@ builder.Services.AddDatabaseConfiguration
     (builder.Configuration);
 builder.Services.AddScoped<IPersonServices
     , PersonServicesImpl>();
+builder.Services.AddScoped<IPersonRepository,
+    PersonRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

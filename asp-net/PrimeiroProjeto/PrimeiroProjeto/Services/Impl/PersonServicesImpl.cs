@@ -1,57 +1,44 @@
 ﻿using PrimeiroProjeto.Model;
 using PrimeiroProjeto.Model.Context;
+using PrimeiroProjeto.Repositories;
+using PrimeiroProjeto.Repositories.Impl;
 
 namespace PrimeiroProjeto.Services.Impl
 {
     public class PersonServicesImpl : IPersonServices
     {
-        private MSSQLContext _context;
-        public PersonServicesImpl(MSSQLContext context)
+        private IPersonRepository _repository;
+        public PersonServicesImpl
+            (IPersonRepository repository)
         {
-            _context=context;
+            _repository=repository;
         }
 
         public List<Person> FindAll()
         {
             
-            return _context.Persons.ToList();
+            return _repository.FindAll();
         }
         public Person FindById(long id)
         {
 
 
-            return _context.Persons.Find(id);
+            return _repository.FindById(id);
         }
         public Person Create(Person person)
         {
-            _context.Persons.Add(person);
-            _context.SaveChanges();
-            return person;
+            
+            
+            return _repository.Create(person);
         }
         public Person Update(Person person)
         {
-            var existingPerson =
-                _context.Persons.Find(person.Id);
-            if (existingPerson == null)
-            {
-                return null;
-            }
-            _context.Entry(existingPerson)
-               .CurrentValues.SetValues(person);
-            _context.SaveChanges();
-            return person;
+            return _repository.Update(person);
         }
 
         public void Delete(long id)
         {
-            var existingPerson =
-                _context.Persons.Find(id);
-            if (existingPerson == null)
-            {
-                return;
-            }
-            _context.Persons.Remove(existingPerson);
-            _context.SaveChanges();
+            _repository.Delete(id);
             
         }
 
