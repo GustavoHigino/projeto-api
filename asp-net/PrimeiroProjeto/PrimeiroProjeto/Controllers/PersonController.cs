@@ -9,7 +9,7 @@ namespace PrimeiroProjeto.Controllers
     [Route("api/[controller]")]
     public class PersonController : ControllerBase
     {
-        private IPersonServices _personServices;
+        private readonly IPersonServices _personServices;
         private readonly ILogger<PersonController>
             _logger;
         public PersonController

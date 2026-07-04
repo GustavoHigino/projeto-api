@@ -1,15 +1,15 @@
-﻿using PrimeiroProjeto.Model;
-using PrimeiroProjeto.Model.Context;
+﻿
+
+using PrimeiroProjeto.Model;
 using PrimeiroProjeto.Repositories;
-using PrimeiroProjeto.Repositories.Impl;
 
 namespace PrimeiroProjeto.Services.Impl
 {
     public class PersonServicesImpl : IPersonServices
     {
-        private IPersonRepository _repository;
+        private readonly IRepository<Person> _repository;
         public PersonServicesImpl
-            (IPersonRepository repository)
+            (IRepository<Person> repository)
         {
             _repository=repository;
         }
@@ -17,7 +17,7 @@ namespace PrimeiroProjeto.Services.Impl
         public List<Person> FindAll()
         {
             
-            return _repository.FindAll();
+            return _repository.FindAll().ToList();
         }
         public Person FindById(long id)
         {
@@ -43,6 +43,5 @@ namespace PrimeiroProjeto.Services.Impl
         }
 
         
-
     }
 }

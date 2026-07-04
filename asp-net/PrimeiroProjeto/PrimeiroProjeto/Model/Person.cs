@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PrimeiroProjeto.Model.Base;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrimeiroProjeto.Model
@@ -6,15 +7,9 @@ namespace PrimeiroProjeto.Model
     [Table("person")]//diz isso é uma tabela e
     //esse nome deve refletir ao nome que esta na tabela
     //do sql server
-    public class Person
+    public class Person : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(
-            DatabaseGeneratedOption
-            .Identity)]
-        [Column("id")]
-        public long Id { get; set; }
-
+        
 
         [Required]
         [Column("first_name",TypeName ="varchar(80)")]

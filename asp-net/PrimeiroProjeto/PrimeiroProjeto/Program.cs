@@ -15,10 +15,15 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddDatabaseConfiguration
     (builder.Configuration);
+builder.Services.AddEvolveConfiguration(
+    builder.Configuration,
+    builder.Environment);
 builder.Services.AddScoped<IPersonServices
     , PersonServicesImpl>();
-builder.Services.AddScoped<IPersonRepository,
-    PersonRepository>();
+builder.Services.AddScoped(typeof(IRepository<>), 
+    typeof(GenericRepository<>));
+builder.Services.AddScoped<IBookService, BookServiceImpl>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
