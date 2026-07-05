@@ -1,5 +1,7 @@
 ﻿
 
+using PrimeiroProjeto.Data.Converter.Impl;
+using PrimeiroProjeto.Data.DTO;
 using PrimeiroProjeto.Model;
 using PrimeiroProjeto.Repositories;
 
@@ -7,33 +9,47 @@ namespace PrimeiroProjeto.Services.Impl
 {
     public class PersonServicesImpl : IPersonServices
     {
-        private readonly IRepository<Person> _repository;
+        private IRepository<Person> _repository;
+        private readonly PersonConverter _converter;
         public PersonServicesImpl
             (IRepository<Person> repository)
         {
             _repository=repository;
+            _converter = new PersonConverter();
+
         }
 
-        public List<Person> FindAll()
+        public List<PersonDTO> FindAll()
         {
-            
-            return _repository.FindAll().ToList();
+
+            return _converter.ParseList
+                (_repository.FindAll().ToList());
+                
         }
-        public Person FindById(long id)
+        public PersonDTO FindById(long id)
         {
 
 
-            return _repository.FindById(id);
+            return _converter.Parse(
+                _repository.FindById(id));
         }
-        public Person Create(Person person)
+        public PersonDTO Create(PersonDTO person)
         {
-            
-            
-            return _repository.Create(person);
+
+            var entity = _converter.Parse
+                (person);
+            var create = 
+                _repository.Create(entity);
+            return _converter.Parse(create);
         }
-        public Person Update(Person person)
+        public PersonDTO Update(PersonDTO person)
         {
-            return _repository.Update(person);
+            var entity = _converter
+                .Parse(person);
+
+            var update=_repository.Update(entity);
+            return _converter.Parse(update);
+
         }
 
         public void Delete(long id)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PrimeiroProjeto.Data.DTO;
 using PrimeiroProjeto.Model;
 using PrimeiroProjeto.Services;
 
@@ -36,7 +37,7 @@ namespace PrimeiroProjeto.Controllers
             return Ok(book);
         }
         [HttpPost]
-        public IActionResult Post(Book book)
+        public IActionResult Post(BookDTO book)
         {
             if (book == null)
             {
@@ -48,7 +49,7 @@ namespace PrimeiroProjeto.Controllers
             return Ok(bookCreated);
         }
         [HttpPut]
-        public IActionResult Put(Book book)
+        public IActionResult Put(BookDTO book)
         {
             var bookPut = _service.Update(book);
             if (bookPut == null)

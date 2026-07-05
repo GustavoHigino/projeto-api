@@ -1,4 +1,7 @@
-﻿using PrimeiroProjeto.Model;
+﻿using Mapster;
+using PrimeiroProjeto.Controllers;
+using PrimeiroProjeto.Data.DTO;
+using PrimeiroProjeto.Model;
 using PrimeiroProjeto.Repositories;
 
 namespace PrimeiroProjeto.Services.Impl
@@ -10,24 +13,31 @@ namespace PrimeiroProjeto.Services.Impl
             _repository = repository;
         }
         private readonly IRepository<Book> _repository;
-        public IEnumerable<Book> FindAll()
+        public IEnumerable<BookDTO> FindAll()
         {
-            return _repository.FindAll();
+            return _repository.FindAll()
+                .Adapt<IEnumerable<BookDTO>>();
         }
 
-        public Book FindById(long id)
+        public BookDTO FindById(long id)
         {
-            return _repository.FindById(id);
+            return _repository.FindById(id)
+                .Adapt<BookDTO>();
             
         }
-        public Book Create(Book book)
+        public BookDTO Create(BookDTO bookDTO)
         {
-            return _repository.Create(book);
+            var book = bookDTO.Adapt<Book>();
+            book= _repository
+                .Create(book);
+            return book.Adapt<BookDTO>();
         }
-
-        public Book Update(Book book)
+        
+        public BookDTO Update(BookDTO book)
         {
-            return _repository.Update(book);
+            var entity = book.Adapt<Book>();
+            entity=_repository.Update(entity);
+            return entity.Adapt<BookDTO>();
         }
         public void Delete(long Id)
         {

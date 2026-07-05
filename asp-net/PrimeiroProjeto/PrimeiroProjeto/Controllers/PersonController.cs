@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PrimeiroProjeto.Data.DTO;
 using PrimeiroProjeto.Model;
 using PrimeiroProjeto.Services;
 
@@ -43,7 +44,8 @@ namespace PrimeiroProjeto.Controllers
             return Ok(person);
         }
         [HttpPost]
-        public IActionResult Post([FromBody] Person person)
+        public IActionResult Post([FromBody] 
+        PersonDTO person)
         {
             _logger.LogInformation($"Creating new" +
                 $" person : {person.FirstName}");
@@ -59,7 +61,7 @@ namespace PrimeiroProjeto.Controllers
             return Ok(personCreate);
         }
         [HttpPut]
-        public IActionResult Put([FromBody] Person 
+        public IActionResult Put([FromBody] PersonDTO 
             person)
         {
             _logger.LogInformation($"Updating " +
