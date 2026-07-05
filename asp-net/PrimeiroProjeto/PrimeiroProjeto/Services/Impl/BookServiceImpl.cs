@@ -1,6 +1,6 @@
 ﻿using Mapster;
 using PrimeiroProjeto.Controllers;
-using PrimeiroProjeto.Data.DTO;
+using PrimeiroProjeto.Data.DTO.V1;
 using PrimeiroProjeto.Model;
 using PrimeiroProjeto.Repositories;
 

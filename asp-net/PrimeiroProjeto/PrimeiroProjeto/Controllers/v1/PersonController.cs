@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PrimeiroProjeto.Data.DTO;
+using PrimeiroProjeto.Data.DTO.V1;
 using PrimeiroProjeto.Model;
 using PrimeiroProjeto.Services;
 
-namespace PrimeiroProjeto.Controllers
+namespace PrimeiroProjeto.Controllers.v1
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/v1")]
     public class PersonController : ControllerBase
     {
         private readonly IPersonServices _personServices;

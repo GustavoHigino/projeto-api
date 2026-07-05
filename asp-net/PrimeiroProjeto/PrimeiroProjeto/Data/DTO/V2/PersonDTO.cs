@@ -1,4 +1,4 @@
-﻿namespace PrimeiroProjeto.Data.DTO
+﻿namespace PrimeiroProjeto.Data.DTO.V2
 { 
     public class PersonDTO 
     {
@@ -7,5 +7,6 @@
         public string LastName { get; set; }
         public string Address {  get; set; }
         public string Gender {  get; set; }
+        public DateTime? BirthDay { get; set; }
     }
 }

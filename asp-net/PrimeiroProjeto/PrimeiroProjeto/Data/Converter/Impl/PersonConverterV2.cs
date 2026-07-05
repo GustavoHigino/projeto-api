@@ -1,10 +1,10 @@
 ﻿using PrimeiroProjeto.Data.Converter.Contract;
-using PrimeiroProjeto.Data.DTO.V1;
+using PrimeiroProjeto.Data.DTO.V2;
 using PrimeiroProjeto.Model;
 
 namespace PrimeiroProjeto.Data.Converter.Impl
 {
-    public class PersonConverter : 
+    public class PersonConverterV2 : 
         IParser<Person, PersonDTO>, 
         IParser< PersonDTO, Person>
     {
@@ -49,7 +49,7 @@ namespace PrimeiroProjeto.Data.Converter.Impl
                 Address = origin.Address,
                 LastName = origin.LastName,
                 Gender = origin.Gender,
-                
+                BirthDay = DateTime.Now
                 //Birthday=origin.Birthday
             };
         }

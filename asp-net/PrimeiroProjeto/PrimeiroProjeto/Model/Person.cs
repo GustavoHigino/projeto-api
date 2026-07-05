@@ -33,6 +33,8 @@ namespace PrimeiroProjeto.Model
         [MaxLength(6)]
         public string Gender {  get; set; }
 
+        //[NotMapped]
+        //public DateTime? BirthDay { get; set; }
 
     }
 }

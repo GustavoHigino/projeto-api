@@ -1,5 +1,4 @@
-﻿
-namespace PrimeiroProjeto.Data.DTO
+﻿namespace PrimeiroProjeto.Data.DTO.V1
 {
     
     public class BookDTO 

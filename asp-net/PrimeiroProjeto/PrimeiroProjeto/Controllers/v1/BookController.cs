@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PrimeiroProjeto.Data.DTO;
-using PrimeiroProjeto.Model;
+using PrimeiroProjeto.Data.DTO.V1;
 using PrimeiroProjeto.Services;
 
-namespace PrimeiroProjeto.Controllers
+namespace PrimeiroProjeto.Controllers.v1
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]/v1")]
     public class BookController : ControllerBase
     {
         private readonly IBookService _service;
@@ -46,6 +45,11 @@ namespace PrimeiroProjeto.Controllers
             }
             _logger.LogDebug("Sucesso ao criar o livro");
             var bookCreated = _service.Create(book);
+            Response.Headers.Add
+                ("X-API-Deprecated", "true");
+            Response.Headers.Add
+                ("X-API-Deprecation-Date",
+                "2026-12-31");
             return Ok(bookCreated);
         }
         [HttpPut]
