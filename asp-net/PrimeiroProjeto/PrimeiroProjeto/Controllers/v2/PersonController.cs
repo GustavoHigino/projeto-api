@@ -35,6 +35,9 @@ namespace PrimeiroProjeto.Controllers.v2
                     $"{person.FirstName}");
                 return NotFound();
             }
+            //personCreate.LastName = null;
+            //personCreate.Age = 0;
+            personCreate.Age = 20;
             return Ok(personCreate);
         }
         
