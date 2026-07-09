@@ -9,7 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddSerilogLogging();
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddContentNegotiation();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddOpenAPIConfig();
+builder.Services.AddSwaggerConfig();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -23,7 +28,8 @@ builder.Services.AddScoped<IPersonServices
 builder.Services.AddScoped(typeof(IRepository<>), 
     typeof(GenericRepository<>));
 builder.Services.AddScoped<IBookService, BookServiceImpl>();
-builder.Services.AddScoped<PersonServicesImplV2>(); 
+builder.Services.AddScoped<PersonServicesImplV2>();
+builder.Services.AddRouteConfig();
 
 var app = builder.Build();
 
@@ -38,5 +44,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseSwaggerSpecification();
+app.UseScalarConfiguration();
 
 app.Run();

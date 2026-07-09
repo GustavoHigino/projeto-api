@@ -16,6 +16,10 @@ namespace PrimeiroProjeto.Controllers.v1
             _service = service;
             _logger = logger;
         }
+        [ProducesResponseType(200,
+            Type = typeof(BookDTO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
 
         [HttpGet]
         public IActionResult Get()
@@ -23,6 +27,10 @@ namespace PrimeiroProjeto.Controllers.v1
             _logger.LogDebug("Todos os livros");
             return Ok(_service.FindAll());
         }
+        [ProducesResponseType(200,
+            Type = typeof(BookDTO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [HttpGet("{id}")]
         public IActionResult GetId(long id)
         {
@@ -35,6 +43,10 @@ namespace PrimeiroProjeto.Controllers.v1
             _logger.LogDebug("Livro encontrado com sucesso");
             return Ok(book);
         }
+        [ProducesResponseType(200,
+            Type = typeof(BookDTO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [HttpPost]
         public IActionResult Post(BookDTO book)
         {
@@ -52,6 +64,10 @@ namespace PrimeiroProjeto.Controllers.v1
                 "2026-12-31");
             return Ok(bookCreated);
         }
+        [ProducesResponseType(200,
+            Type = typeof(BookDTO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [HttpPut]
         public IActionResult Put(BookDTO book)
         {
@@ -64,6 +80,9 @@ namespace PrimeiroProjeto.Controllers.v1
             _logger.LogDebug("Sucesso ao mudar informações do livro");
             return Ok(bookPut);
         }
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {

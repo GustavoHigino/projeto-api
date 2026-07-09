@@ -21,12 +21,20 @@ namespace PrimeiroProjeto.Controllers.v1
             _personServices = personService;
         }
         [HttpGet]
+        [ProducesResponseType(200,
+            Type= typeof(List<PersonDTO>))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         public IActionResult Get()
         {
             _logger.LogInformation("Fetching all " +
                 "persons");
             return Ok(_personServices.FindAll());
         }
+        [ProducesResponseType(200,
+            Type =typeof(PersonDTO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [HttpGet("{id:long}")]
         public IActionResult Get(long id)
         {
@@ -43,6 +51,10 @@ namespace PrimeiroProjeto.Controllers.v1
             }
             return Ok(person);
         }
+        [ProducesResponseType(200,
+            Type = typeof(PersonDTO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [HttpPost]
         public IActionResult Post([FromBody] 
         PersonDTO person)
@@ -60,6 +72,10 @@ namespace PrimeiroProjeto.Controllers.v1
             }
             return Ok(personCreate);
         }
+        [ProducesResponseType(200,
+            Type = typeof(PersonDTO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [HttpPut]
         public IActionResult Put([FromBody] PersonDTO 
             person)
@@ -79,6 +95,10 @@ namespace PrimeiroProjeto.Controllers.v1
                 $"{personChange.FirstName}");
             return Ok(personChange);
         }
+        [ProducesResponseType(204,
+            Type = typeof(PersonDTO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [HttpDelete("{id:int}")]
         public IActionResult Delete( int id)
         {
