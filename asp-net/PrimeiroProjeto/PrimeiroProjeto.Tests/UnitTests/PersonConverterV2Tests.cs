@@ -3,7 +3,7 @@ using PrimeiroProjeto.Data.Converter.Impl;
 using PrimeiroProjeto.Data.DTO.V2;
 using PrimeiroProjeto.Model;
 
-namespace PrimeiroProjeto.Tests
+namespace PrimeiroProjeto.Tests.UnitTests
 {
     public class PersonConverterV2Tests
     {
