@@ -31,6 +31,9 @@ builder.Services.AddScoped<IBookService, BookServiceImpl>();
 builder.Services.AddScoped<PersonServicesImplV2>();
 builder.Services.AddRouteConfig();
 
+builder.Services.AddCorsConfiguration
+    (builder.Configuration);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,6 +45,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseRouting();
+//app.UseCorsConfiguration();
+app.UseCorsConfiguration(builder.Configuration);
 
 app.MapControllers();
 

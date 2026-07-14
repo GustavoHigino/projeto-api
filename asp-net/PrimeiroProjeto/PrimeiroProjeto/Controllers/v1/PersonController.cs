@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrimeiroProjeto.Data.DTO.V1;
 using PrimeiroProjeto.Model;
@@ -8,6 +9,7 @@ namespace PrimeiroProjeto.Controllers.v1
 {
     [ApiController]
     [Route("api/[controller]/v1")]
+    //[EnableCors("LocalPolicy")]
     public class PersonController : ControllerBase
     {
         private readonly IPersonServices _personServices;
@@ -36,6 +38,7 @@ namespace PrimeiroProjeto.Controllers.v1
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [HttpGet("{id:long}")]
+        //[EnableCors("LocalPolicy")]
         public IActionResult Get(long id)
         {
             _logger.LogInformation
@@ -56,6 +59,7 @@ namespace PrimeiroProjeto.Controllers.v1
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [HttpPost]
+        //[EnableCors("MultipleOriginPolicy")]
         public IActionResult Post([FromBody] 
         PersonDTO person)
         {
