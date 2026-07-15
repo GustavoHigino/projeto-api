@@ -33,6 +33,8 @@ builder.Services.AddRouteConfig();
 
 builder.Services.AddCorsConfiguration
     (builder.Configuration);
+builder.Services.AddScoped<IPersonRepository,
+    PersonRepository>();
 
 var app = builder.Build();
 

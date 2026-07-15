@@ -21,6 +21,7 @@ namespace PrimeiroProjeto.Data.Converter.Impl
                 Address = origin.Address,
                 LastName = origin.LastName,
                 Gender = origin.Gender,
+                Enabled=origin.Enabled
                 //Birthday=origin.Birthday
             };
         }
@@ -49,6 +50,7 @@ namespace PrimeiroProjeto.Data.Converter.Impl
                 Address = origin.Address,
                 LastName = origin.LastName,
                 Gender = origin.Gender,
+                Enabled=origin.Enabled
                 
                 //Birthday=origin.Birthday
             };

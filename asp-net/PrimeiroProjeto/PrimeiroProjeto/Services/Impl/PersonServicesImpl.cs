@@ -1,5 +1,6 @@
 ﻿
 
+using Mapster;
 using PrimeiroProjeto.Data.Converter.Impl;
 using PrimeiroProjeto.Data.DTO.V1;
 using PrimeiroProjeto.Model;
@@ -9,10 +10,10 @@ namespace PrimeiroProjeto.Services.Impl
 {
     public class PersonServicesImpl : IPersonServices
     {
-        private IRepository<Person> _repository;
+        private IPersonRepository _repository;
         private readonly PersonConverter _converter;
         public PersonServicesImpl
-            (IRepository<Person> repository)
+            (IPersonRepository repository)
         {
             _repository=repository;
             _converter = new PersonConverter();
@@ -58,6 +59,12 @@ namespace PrimeiroProjeto.Services.Impl
             
         }
 
-        
+        public PersonDTO Disable(long id)
+        {
+            var entity = _repository
+                .Disable(id);
+            return entity.Adapt<PersonDTO>();
+
+        }
     }
 }

@@ -12,15 +12,25 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.Tools
             <TTestCase>(IEnumerable<TTestCase> testCases)
             where TTestCase : ITestCase
         {
-            var sortedMethods =
-                testCases.OrderBy(
-                    tc => tc.TestMethod.Method
-                    .GetCustomAttributes
-                    (typeof
-                    (TestPriorityAttribute))
-                    .FirstOrDefault()
-                    ?.GetNamedArgument<int>
-                    ("Priority")?? 0);
+            var sortedMethods = testCases.OrderBy(tc =>
+            {
+                var attr = tc.TestMethod.Method
+                    .GetCustomAttributes(typeof(TestPriorityAttribute))
+                    .FirstOrDefault();
+
+                if (attr == null) return 0;
+
+                // Tenta obter o argumento posicional do construtor (geralmente o primeiro, índice 0)
+                var constructorArgs = attr.GetConstructorArguments();
+                if (constructorArgs != null && constructorArgs.Any())
+                {
+                    return (int)constructorArgs.First();
+                }
+
+                // Caso tenha sido passado como argumento nomeado
+                return attr.GetNamedArgument<int>("Priority");
+            });
+
             return sortedMethods;
         }
     }

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace PrimeiroProjeto.Tests.IntegrationTests.CORS
 {
     [TestCaseOrderer

@@ -11,7 +11,7 @@ namespace PrimeiroProjeto.Repositories.Impl
         {
             _context = context;
         }
-        private readonly MSSQLContext _context;
+        protected readonly MSSQLContext _context;
         public IEnumerable<T> FindAll()
         {
             return _context.Set<T>().AsEnumerable();
