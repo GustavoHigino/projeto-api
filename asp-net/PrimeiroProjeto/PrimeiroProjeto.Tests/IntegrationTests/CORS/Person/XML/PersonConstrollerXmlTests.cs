@@ -201,14 +201,13 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS.Person.XML
             first.Enabled.Should().BeTrue();
             first.Gender.Should().Be("Male");
             var fourth = list.First
-                (p => p.FirstName == "Satoru");
+                (p => p.FirstName == "Nelson");
             fourth.LastName.Should().Be
-                ("Iwata");
+                ("Mandela");
             fourth.Address.Should().Be
-                ("Jokkaido - Japan");
+                ("Mvezo - Soth Africa");
             fourth.Enabled.Should().BeTrue();
             fourth.Gender.Should().Be("Male");
-
         }
     }
 }

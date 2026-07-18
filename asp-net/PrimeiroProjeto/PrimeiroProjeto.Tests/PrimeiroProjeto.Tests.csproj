@@ -33,6 +33,11 @@
 			
 		</Content>
 	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="appsettings.Test.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />

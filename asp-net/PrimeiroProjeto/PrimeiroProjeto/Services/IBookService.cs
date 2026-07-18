@@ -6,7 +6,7 @@ namespace PrimeiroProjeto.Services
     {
         BookDTO Create(BookDTO book);
         BookDTO FindById(long id);
-        IEnumerable<BookDTO> FindAll();
+        List<BookDTO> FindAll();
         BookDTO Update(BookDTO book);
         void Delete(long id);
     }

@@ -13,10 +13,10 @@ namespace PrimeiroProjeto.Services.Impl
             _repository = repository;
         }
         private readonly IRepository<Book> _repository;
-        public IEnumerable<BookDTO> FindAll()
+        public List<BookDTO> FindAll()
         {
             return _repository.FindAll()
-                .Adapt<IEnumerable<BookDTO>>();
+                .Adapt<List<BookDTO>>();
         }
 
         public BookDTO FindById(long id)

@@ -1,4 +1,5 @@
 using PrimeiroProjeto.Configurations;
+using PrimeiroProjeto.Hypermedia.Filters;
 using PrimeiroProjeto.Repositories;
 using PrimeiroProjeto.Repositories.Impl;
 using PrimeiroProjeto.Services;
@@ -9,7 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddSerilogLogging();
 // Add services to the container.
 
-builder.Services.AddControllers()
+builder.Services.AddControllers(options =>
+    {
+        options.Filters.Add<HypermediaFilter>();
+    })
     .AddContentNegotiation();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -33,6 +37,7 @@ builder.Services.AddRouteConfig();
 
 builder.Services.AddCorsConfiguration
     (builder.Configuration);
+builder.Services.AddHATEOASCOnfiguration();
 builder.Services.AddScoped<IPersonRepository,
     PersonRepository>();
 
@@ -52,6 +57,7 @@ app.UseRouting();
 app.UseCorsConfiguration(builder.Configuration);
 
 app.MapControllers();
+app.UseHATEOASRoutes();
 
 app.UseSwaggerSpecification();
 app.UseScalarConfiguration();
