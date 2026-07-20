@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using PrimeiroProjeto.Data.DTO.V1;
+using PrimeiroProjeto.Hypermedia.Utils;
 using PrimeiroProjeto.Tests.IntegrationTests.Tools;
 using Renci.SshNet;
 using System;
@@ -183,31 +184,42 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS.Person.XML
         {
             var response = await
                 _httpClient
-                .GetAsync("api/person/v1");
+                .GetAsync("api/person/v1/asc/10/1");
 
             response.EnsureSuccessStatusCode();
 
-            var list = await XmlHelper
+            var page = await XmlHelper
                 .DeserializeFromXmlAsync 
-                < List < PersonDTO >>
+                < PagedSearchDTO < PersonDTO >>
                 (response);
+            page.Should().NotBeNull();
+            page.CurrentPage.Should().Be(1);
+            var list = page.List;
             list.Should().NotBeNull();
             list.Count.Should().BeGreaterThan(0);
             var first = list.First
-                (p=>p.FirstName=="Ayrton");
-            first.LastName.Should().Be("Senna");
+                (p => p.FirstName == "Abbe");
+            first.LastName.Should().Be("Storr");
             first.Address.Should().Be
-                ("São Paulo - Brasil");
+                ("Suite 30");
             first.Enabled.Should().BeTrue();
-            first.Gender.Should().Be("Male");
+            first.Gender.Should().Be("Female");
             var fourth = list.First
-                (p => p.FirstName == "Nelson");
+                (p => p.FirstName == "Addison");
             fourth.LastName.Should().Be
-                ("Mandela");
+                ("Blackway");
             fourth.Address.Should().Be
-                ("Mvezo - Soth Africa");
+                ("15th Floor");
             fourth.Enabled.Should().BeTrue();
             fourth.Gender.Should().Be("Male");
+            page.CurrentPage.Should()
+                .BeGreaterThan(0);
+            page.TotalResult.Should()
+                .BeGreaterThan(0);
+            page.PageSize.Should()
+                .BeGreaterThan(0);
+            page.SortDirections.Should()
+                .NotBeNull();
         }
     }
 }

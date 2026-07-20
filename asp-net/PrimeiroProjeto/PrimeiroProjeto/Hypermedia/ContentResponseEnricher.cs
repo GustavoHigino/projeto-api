@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Routing;
 using PrimeiroProjeto.Hypermedia.Abstract;
+using PrimeiroProjeto.Hypermedia.Utils;
 using System.Runtime.CompilerServices;
 
 namespace PrimeiroProjeto.Hypermedia
@@ -12,7 +13,8 @@ namespace PrimeiroProjeto.Hypermedia
         public virtual bool CanEnrich(Type contentType)
         {
             return contentType == typeof(T) || 
-                contentType==typeof(List<T>);
+                contentType==typeof(List<T>)|| 
+                contentType==typeof(PagedSearchDTO<T>);
         }
         protected abstract Task EnrichModel
             (T content, IUrlHelper urlHelper);
@@ -49,6 +51,16 @@ namespace PrimeiroProjeto.Hypermedia
                 {
                     foreach (var item in collection)
                     {
+                        await EnrichModel
+                            (item, urlHelper);
+                    }
+                }
+                else if (okObjectResult.Value is 
+                    PagedSearchDTO<T> pagedSearch)
+                {
+                    foreach (var item in pagedSearch.List)
+                    {
+                        item.Links?.Clear();
                         await EnrichModel
                             (item, urlHelper);
                     }

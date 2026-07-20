@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrimeiroProjeto.Data.DTO.V1;
+using PrimeiroProjeto.Hypermedia.Utils;
 using PrimeiroProjeto.Model;
 using PrimeiroProjeto.Services;
 
@@ -22,16 +23,37 @@ namespace PrimeiroProjeto.Controllers.v1
             _logger= logger;
             _personServices = personService;
         }
-        [HttpGet]
+        [HttpGet("{sortDirection}/{pageSize}/{page}")]
+        [ProducesResponseType(200,
+            Type= typeof(PagedSearchDTO<PersonDTO>))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public IActionResult Get(
+            [FromQuery] string? name,
+            string sortDirection,
+            int pageSize,
+            int page)
+        {
+            _logger.LogInformation($"" +
+                $"Fetching person with page search :" +
+                $"{name},{sortDirection},{pageSize},{page}");
+            return Ok(_personServices
+                .FindWithPagedSearch(name,sortDirection,
+                pageSize,page));
+        }
+        [HttpGet("find-by-name")]
         [ProducesResponseType(200,
             Type= typeof(List<PersonDTO>))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
-        public IActionResult Get()
+        public IActionResult GetByName(
+            [FromQuery]string? firstName,
+            [FromQuery]string? lastName)
         {
-            _logger.LogInformation("Fetching all " +
-                "persons");
-            return Ok(_personServices.FindAll());
+            _logger.LogInformation($"Fetching " +
+                $"persons by name {firstName} {lastName}");
+            return Ok(_personServices.
+                 FindByName(firstName,lastName));
         }
         [ProducesResponseType(200,
             Type =typeof(PersonDTO))]

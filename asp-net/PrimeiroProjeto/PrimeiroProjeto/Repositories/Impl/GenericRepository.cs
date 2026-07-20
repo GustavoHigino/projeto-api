@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using PrimeiroProjeto.Model.Base;
 using PrimeiroProjeto.Model.Context;
 
@@ -55,6 +56,24 @@ namespace PrimeiroProjeto.Repositories.Impl
             return _context.Set<T>().Any
                 (e=> e.Id==id);
             
+        }
+
+        public List<T> FindWithPagedSearch(string query)
+        {
+            return _context.Set<T>()
+                .FromSqlRaw(query).ToList();
+        }
+
+        public int GetCount(string query)
+        {
+            using var connection = _context
+                .Database.GetDbConnection();
+            connection.Open();
+            using var command = connection.
+                CreateCommand();
+            command.CommandText = query;
+            var result = command.ExecuteScalar();
+            return Convert.ToInt32(result);
         }
     }
 }

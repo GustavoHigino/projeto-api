@@ -1,4 +1,5 @@
 ﻿using PrimeiroProjeto.Data.DTO.V1;
+using PrimeiroProjeto.Hypermedia.Utils;
 using PrimeiroProjeto.Model;
 
 namespace PrimeiroProjeto.Services
@@ -12,5 +13,10 @@ namespace PrimeiroProjeto.Services
         void Delete(long id);
 
         PersonDTO Disable(long id);
+        List<PersonDTO> FindByName(string firstName,
+            string lastName);
+        PagedSearchDTO<PersonDTO> FindWithPagedSearch
+            (string name, string sortDirection,
+            int pageSize, int page);
     }
 }

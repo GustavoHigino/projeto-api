@@ -3,6 +3,7 @@
 using Mapster;
 using PrimeiroProjeto.Data.Converter.Impl;
 using PrimeiroProjeto.Data.DTO.V1;
+using PrimeiroProjeto.Hypermedia.Utils;
 using PrimeiroProjeto.Model;
 using PrimeiroProjeto.Repositories;
 
@@ -66,5 +67,30 @@ namespace PrimeiroProjeto.Services.Impl
             return entity.Adapt<PersonDTO>();
 
         }
+
+        public List<PersonDTO> FindByName
+            (string firstName, string lastName)
+        {
+            return _repository.FindByName
+                (firstName, lastName).Adapt
+                <List<PersonDTO>>();
+        }
+
+        public PagedSearchDTO<PersonDTO> 
+            FindWithPagedSearch
+            (string name, string sortDirection,
+            int pageSize, int page)
+        {
+            
+            var result = _repository
+                .FindWithPagedSearch(name,sortDirection,
+                pageSize,page);
+            
+
+            return result
+                .Adapt<PagedSearchDTO<PersonDTO>>();
+        }
+
+        
     }
 }
