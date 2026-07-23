@@ -4,6 +4,7 @@ using PrimeiroProjeto.Files.Exporters.Impl;
 using PrimeiroProjeto.Files.Importers.Factory;
 using PrimeiroProjeto.Files.Importers.Impl;
 using PrimeiroProjeto.Hypermedia.Filters;
+using PrimeiroProjeto.Mail;
 using PrimeiroProjeto.Repositories;
 using PrimeiroProjeto.Repositories.Impl;
 using PrimeiroProjeto.Services;
@@ -54,7 +55,18 @@ builder.Services.AddRouteConfig();
 
 builder.Services.AddCorsConfiguration
     (builder.Configuration);
+
+
+
 builder.Services.AddHATEOASCOnfiguration();
+
+builder.Services.AddEmailConfiguration
+    (builder.Configuration);
+builder.Services.AddScoped<IEmailService,
+    EmailServiceImpl>();
+builder.Services.AddScoped<EmailSender>();
+
+
 builder.Services.AddScoped<IPersonRepository,
     PersonRepository>();
 
