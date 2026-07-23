@@ -1,4 +1,8 @@
 using PrimeiroProjeto.Configurations;
+using PrimeiroProjeto.Files.Exporters.Factory;
+using PrimeiroProjeto.Files.Exporters.Impl;
+using PrimeiroProjeto.Files.Importers.Factory;
+using PrimeiroProjeto.Files.Importers.Impl;
 using PrimeiroProjeto.Hypermedia.Filters;
 using PrimeiroProjeto.Repositories;
 using PrimeiroProjeto.Repositories.Impl;
@@ -33,6 +37,16 @@ builder.Services.AddScoped(typeof(IRepository<>),
     typeof(GenericRepository<>));
 builder.Services.AddScoped<IBookService, BookServiceImpl>();
 builder.Services.AddScoped<PersonServicesImplV2>();
+
+builder.Services.AddScoped<CsvImporter>();
+builder.Services.AddScoped<XlsxImporter>();
+builder.Services.AddScoped<FileImporterFactory>();
+
+
+builder.Services.AddScoped<CsvExporter>();
+builder.Services.AddScoped<XlsxExporter>();
+builder.Services.AddScoped<FileExporterFactory>();
+
 builder.Services.AddSingleton<IHttpContextAccessor,
     HttpContextAccessor>();
 builder.Services.AddScoped<IFileServices,FileServiceImpl>();

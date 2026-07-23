@@ -1,4 +1,5 @@
-﻿using PrimeiroProjeto.Data.DTO.V1;
+﻿using Microsoft.AspNetCore.Mvc;
+using PrimeiroProjeto.Data.DTO.V1;
 using PrimeiroProjeto.Hypermedia.Utils;
 using PrimeiroProjeto.Model;
 
@@ -18,5 +19,15 @@ namespace PrimeiroProjeto.Services
         PagedSearchDTO<PersonDTO> FindWithPagedSearch
             (string name, string sortDirection,
             int pageSize, int page);
+        Task<List<PersonDTO>>
+            MassCreationAsync(
+            IFormFile file);
+
+        IActionResult ExportPage(
+            int page,
+            int pageSize,
+            string sortDirection,
+            string acceptHeader,
+            string name);
     }
 }

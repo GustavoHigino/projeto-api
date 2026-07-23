@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrimeiroProjeto.Data.DTO.V1;
+using PrimeiroProjeto.Files.Exporters.Factory;
 using PrimeiroProjeto.Hypermedia.Utils;
 using PrimeiroProjeto.Model;
 using PrimeiroProjeto.Services;
@@ -155,6 +157,90 @@ namespace PrimeiroProjeto.Controllers.v1
             _logger.LogDebug($"Person with ID" +
                 $" {id} disable successfully");
             return Ok(disabledPerson);
+        }
+        [HttpPost("massCreation")]
+        
+        [ProducesResponseType(200,
+            Type =typeof(List<PersonDTO>))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> MassCreation
+            ([FromForm] FileUploadDTO input)
+        {
+            if (input.File == null || input.File.Length == 0) 
+            {
+                _logger.LogWarning("No file uploaded" +
+                    "for mass creation");
+                return BadRequest("File is Required!");
+            }
+            _logger.LogInformation($"Starting mass" +
+                $"creation from uploaded file {input.File.FileName}");
+            var persons = await _personServices
+                .MassCreationAsync(input.File);
+            if (persons == null)
+            {
+                _logger.LogError($"Mass Creation" +
+                    $"failed for file {input.File.FileName}");
+                return NoContent();
+            }
+            _logger.LogInformation($"{persons.Count}" +
+                $" persons created" +
+                $"successfully");
+            return Ok(persons);
+
+
+        }
+        [HttpGet
+            ("exportPage/{sortDirection}/{pageSize}/{page}")]
+        [ProducesResponseType(200,
+            Type = typeof(byte[]))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(415)]
+        [Produces(
+            MediaTypes.ApplicationXlsx,
+            MediaTypes.ApplicationCsv)]
+        public IActionResult ExportPage(
+            string sortDirection,
+            int pageSize,
+            int page,
+            [FromQuery] string name="")
+        {
+            var acceptHeader = Request.Headers
+                ["Accept"].ToString();
+            if (string.IsNullOrWhiteSpace(acceptHeader))
+            {
+                return BadRequest("Accept header is required");
+            }
+            _logger.LogInformation($"exporting persons " +
+                $"with search {name}, {sortDirection}," +
+                $" {page}, {acceptHeader}");
+            try
+            {
+                var fileResult = 
+                _personServices.ExportPage(page, pageSize,
+                sortDirection, acceptHeader, name);
+                return fileResult;
+            }
+            catch (NotSupportedException ex)
+            {
+
+                _logger.LogWarning(ex, 
+                    $"Unsupported export format " +
+                    $"requested : {acceptHeader}");
+                return StatusCode(StatusCodes
+                    .Status415UnsupportedMediaType, 
+                    ex.Message);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Unexpected error while exporting" +
+                    "data");
+                return StatusCode(StatusCodes
+                    .Status500InternalServerError,
+                    "Internal Server Error");
+            }
         }
     }
 }

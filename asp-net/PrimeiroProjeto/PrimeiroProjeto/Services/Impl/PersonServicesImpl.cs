@@ -1,8 +1,14 @@
 ﻿
 
+
+
 using Mapster;
+using Microsoft.AspNetCore.Mvc;
+
 using PrimeiroProjeto.Data.Converter.Impl;
 using PrimeiroProjeto.Data.DTO.V1;
+using PrimeiroProjeto.Files.Exporters.Factory;
+using PrimeiroProjeto.Files.Importers.Factory;
 using PrimeiroProjeto.Hypermedia.Utils;
 using PrimeiroProjeto.Model;
 using PrimeiroProjeto.Repositories;
@@ -13,11 +19,20 @@ namespace PrimeiroProjeto.Services.Impl
     {
         private IPersonRepository _repository;
         private readonly PersonConverter _converter;
+        private readonly FileImporterFactory _fileImporterFactory;
+        private readonly FileExporterFactory _fileExporterFactory;
+        private readonly ILogger<PersonServicesImpl> _logger;
         public PersonServicesImpl
-            (IPersonRepository repository)
+            (IPersonRepository repository,
+            FileImporterFactory fileImporterFactory,
+            ILogger<PersonServicesImpl> logger,
+            FileExporterFactory fileExporterFactory)
         {
+            _logger = logger;
+            _fileImporterFactory = fileImporterFactory;
             _repository=repository;
             _converter = new PersonConverter();
+            _fileExporterFactory = fileExporterFactory;
 
         }
 
@@ -91,6 +106,69 @@ namespace PrimeiroProjeto.Services.Impl
                 .Adapt<PagedSearchDTO<PersonDTO>>();
         }
 
-        
+        public async Task<List<PersonDTO>> MassCreationAsync
+            (IFormFile file)
+        {
+            if (file==null || file.Length == 0)
+            {
+                _logger.LogError("File is null or empty");
+                throw new ArgumentException("File is null" +
+                    " or empty.");
+            }
+            using var stream = 
+                file.OpenReadStream();
+            var fileName = file.FileName;
+            try
+            {
+                var importer =
+                    _fileImporterFactory.GetImporter
+                    (fileName);
+                var persons = await importer
+                    .ImportFileAsync(stream);
+                var entities = persons
+                    .Select(dto=>_repository
+                    .Create(dto.Adapt<Person>()))
+                    .ToList();
+                return entities.Adapt<List<PersonDTO>>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during" +
+                    " mass creation from " +
+                    "file: {FileName}", file.FileName);
+                throw;
+            }
+        }
+
+        public IActionResult ExportPage(int page,
+            int pageSize,
+            string sortDirection,
+            string acceptHeader,
+            string name)
+        {
+            _logger.LogInformation($"exporting page:" +
+                $"{page}, {pageSize}, {sortDirection}," +
+                $"{acceptHeader}");
+            var content = FindWithPagedSearch
+                (name,sortDirection,pageSize,page);
+            try
+            {
+                var exporter = _fileExporterFactory
+                .GetExporter(acceptHeader);
+                var people = content.List
+                    .Adapt<List<PersonDTO>>();
+                return exporter.ExportFile(people);
+
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex,$"Unsuported export" +
+                    $"format requestesd {acceptHeader}");
+                throw;
+            }
+
+            
+        }
     }
 }
