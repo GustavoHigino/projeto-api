@@ -6,6 +6,7 @@ using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 namespace PrimeiroProjeto.Tests.IntegrationTests.CORS
@@ -17,6 +18,7 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS
         IClassFixture<SqlServerFixture>
     {
         private readonly HttpClient _httpClient;
+        private static TokenDTO? _token;
         private static PersonDTO _person;
         public PersonCorsIntegrationTests(
             SqlServerFixture sqlFixture)
@@ -36,6 +38,29 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS
             
            
         }
+        [Fact(DisplayName = "00 - Sign In")]
+        [TestPriority(0)]
+        public async Task SignIn_ShouldReturnToken()
+        {
+            var credentials = new
+                UserDTO
+            {
+                Username = "leandro",
+                Password = "admin123",
+            };
+            var response = await _httpClient
+                .PostAsJsonAsync("api/auth/signin",
+                credentials);
+            response.EnsureSuccessStatusCode();
+            var token = await response
+                .Content.ReadFromJsonAsync
+                <TokenDTO>();
+            token.Should().NotBeNull();
+            token.AccessToken.Should().NotBeNullOrWhiteSpace();
+            token.RefreshToken.Should().NotBeNullOrWhiteSpace();
+            _token = token;
+
+        }
         private void AddOriginHeader(string origin)
         {
             _httpClient.DefaultRequestHeaders
@@ -49,6 +74,9 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS
         public async Task
             CreatePerson_WithAllowedOrigin_ShouldReturnCreated()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
             AddOriginHeader("https://erudio.com.br");
             var
                 request
@@ -77,6 +105,9 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS
         public async Task
             CreatePerson_WithDisallowedOrigin_ShouldReturnForbiden()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
             AddOriginHeader("https://semeru.com.br");
             var
                 request
@@ -105,7 +136,10 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS
         public async Task
             FindByIdPerson_WithAllowedOrigin_ShouldReturnOk()
         {
-            
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
+
             AddOriginHeader("https://erudio.com.br");
             var response = await
                 _httpClient
@@ -130,7 +164,10 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS
         public async Task
             FindByIdPerson_WithDisallowedOrigin_ShouldReturnForbiden()
         {
-            
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
+
             AddOriginHeader("https://semeru.com.br");
             var response = await
                 _httpClient

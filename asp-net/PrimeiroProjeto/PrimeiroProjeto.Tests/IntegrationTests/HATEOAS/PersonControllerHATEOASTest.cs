@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using PrimeiroProjeto.Data.DTO.V1;
 using PrimeiroProjeto.Tests.IntegrationTests.Tools;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 
@@ -17,6 +18,7 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.HATEOAS.Person
 
     {
         private readonly HttpClient _httpClient;
+        private static TokenDTO? _token;
         private static PersonDTO _person;
         public PersonControllerHATEOASTest(
             SqlServerFixture sqlFixture)
@@ -36,6 +38,29 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.HATEOAS.Person
 
 
         }
+        [Fact(DisplayName = "00 - Sign In")]
+        [TestPriority(0)]
+        public async Task SignIn_ShouldReturnToken()
+        {
+            var credentials = new
+                UserDTO
+            {
+                Username = "leandro",
+                Password = "admin123",
+            };
+            var response = await _httpClient
+                .PostAsJsonAsync("api/auth/signin",
+                credentials);
+            response.EnsureSuccessStatusCode();
+            var token = await response
+                .Content.ReadFromJsonAsync
+                <TokenDTO>();
+            token.Should().NotBeNull();
+            token.AccessToken.Should().NotBeNullOrWhiteSpace();
+            token.RefreshToken.Should().NotBeNullOrWhiteSpace();
+            _token = token;
+
+        }
         private void AssertLinkPattern(string Content
             ,string rel)
         {
@@ -50,6 +75,9 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.HATEOAS.Person
         public async Task
             CreatePerson_ShouldContainHateoasLinks()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
             var request = new PersonDTO
             {
                 FirstName = "David",
@@ -85,6 +113,9 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.HATEOAS.Person
         public async Task
             UpdatePerson_ShouldCOntainHateoasLinks()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
             _person!.LastName = "Heinemeier Hansson";
 
             var response =
@@ -120,6 +151,9 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.HATEOAS.Person
         public async Task
             DisablePersonById_ShouldContainHateosLinks()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
             var response = await 
                 _httpClient.PatchAsync
                 ($"/api/person/v1/{_person.Id}",
@@ -148,6 +182,9 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.HATEOAS.Person
         public async Task
             GetPersonById_ShouldContainHateoasLinks()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
             var response = await
                 _httpClient.GetAsync
                 ($"/api/person/v1/{_person!.Id}");
@@ -173,6 +210,9 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.HATEOAS.Person
         [TestPriority(5)]
         public async Task FindAll_ShouldReturnLinksForEachPerson()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
 
             // ---------------------------
             // Act

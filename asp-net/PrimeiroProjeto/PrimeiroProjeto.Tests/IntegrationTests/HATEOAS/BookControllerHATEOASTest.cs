@@ -6,6 +6,7 @@ using PrimeiroProjeto.Model.Context;
 using PrimeiroProjeto.Tests.IntegrationTests.Tools;
 using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Runtime.ExceptionServices;
 using System.Text;
@@ -22,6 +23,7 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.HATEOAS.Book
 
     {
         private readonly HttpClient _httpClient;
+        private static TokenDTO? _token;
         private static BookDTO _book;
         public PersonControllerHATEOASTest(
             SqlServerFixture sqlFixture)
@@ -41,6 +43,29 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.HATEOAS.Book
 
 
         }
+        [Fact(DisplayName = "00 - Sign In")]
+        [TestPriority(0)]
+        public async Task SignIn_ShouldReturnToken()
+        {
+            var credentials = new
+                UserDTO
+            {
+                Username = "leandro",
+                Password = "admin123",
+            };
+            var response = await _httpClient
+                .PostAsJsonAsync("api/auth/signin",
+                credentials);
+            response.EnsureSuccessStatusCode();
+            var token = await response
+                .Content.ReadFromJsonAsync
+                <TokenDTO>();
+            token.Should().NotBeNull();
+            token.AccessToken.Should().NotBeNullOrWhiteSpace();
+            token.RefreshToken.Should().NotBeNullOrWhiteSpace();
+            _token = token;
+
+        }
         private void AssertLinkPattern(string Content
             ,string rel)
         {
@@ -55,6 +80,9 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.HATEOAS.Book
         public async Task
             CreateBook_ShouldContainHateoasLinks()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
             var request = new BookDTO
             {
                 Title="Titulo",
@@ -89,6 +117,9 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.HATEOAS.Book
         public async Task
             UpdateBook_ShouldCOntainHateoasLinks()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
             _book!.Title = "Titulo alterado";
 
             var response =
@@ -124,6 +155,9 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.HATEOAS.Book
         public async Task
             GetBookById_ShouldContainHateoasLinks()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
             var response = await
                 _httpClient.GetAsync
                 ($"/api/book/v1/{_book!.Id}");

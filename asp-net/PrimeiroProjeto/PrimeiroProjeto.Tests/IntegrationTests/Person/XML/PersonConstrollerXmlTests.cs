@@ -7,20 +7,21 @@ using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
-namespace PrimeiroProjeto.Tests.IntegrationTests.CORS.Person.JSON
+namespace PrimeiroProjeto.Tests.IntegrationTests.Person.XML
 {
     [TestCaseOrderer
         ("PrimeiroProjeto.Tests.IntegrationTests.Tools.PriorityOrderer",
         "PrimeiroProjeto.Tests")]
-    public class PersonConstrollerJsonTests : 
+    public class PersonConstrollerXmlTests : 
         IClassFixture<SqlServerFixture>
     {
         private readonly HttpClient _httpClient;
+        private static TokenDTO? _token;
         private static PersonDTO _person;
-        public PersonConstrollerJsonTests(
+        public PersonConstrollerXmlTests(
             SqlServerFixture sqlFixture)
         {
            
@@ -35,16 +36,50 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS.Person.JSON
                     BaseAddress = new Uri(
                         "http://localhost")
                 });
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
+            _httpClient.DefaultRequestHeaders.Accept.Add
+                (new MediaTypeWithQualityHeaderValue
+                ("application/xml"));
             
            
         }
-        
+        [Fact(DisplayName = "00 - Sign In")]
+        [TestPriority(0)]
+        public async Task SignIn_ShouldReturnToken()
+        {
+            var credentials = new
+                UserDTO
+            {
+                Username = "leandro",
+                Password = "admin123",
+            };
+            var content = XmlHelper.
+                SerizlizeToXml(credentials);
+            var response = await _httpClient
+                .PostAsync("api/auth/signin",
+                content);
+            response.EnsureSuccessStatusCode();
+            var token = await XmlHelper
+                .DeserializeFromXmlAsync<TokenDTO>
+                (response);
+
+
+            token.Should().NotBeNull();
+            token.AccessToken.Should().NotBeNullOrWhiteSpace();
+            token.RefreshToken.Should().NotBeNullOrWhiteSpace();
+            _token = token;
+
+        }
+
         [Fact(DisplayName ="01 - Create Person ")]
         [TestPriority(1)]
         public async Task
             CreatePerson_ShouldReturnCreatedPerson()
         {
-            
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
+
             var
                 request
                 = new PersonDTO
@@ -57,12 +92,16 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS.Person.JSON
                 };
             var response = await 
                 _httpClient
-                .PostAsJsonAsync
-                ("api/person/v1",request);
+                .PostAsync
+                ("api/person/v1",
+                XmlHelper.SerizlizeToXml
+                ( request));
             response.EnsureSuccessStatusCode();
 
-            var created = await response.Content
-                .ReadFromJsonAsync<PersonDTO>();
+            var created = await XmlHelper
+                .DeserializeFromXmlAsync<PersonDTO>
+                (response);
+                
 
             created.Should().NotBeNull();
             created.Id.Should().BeGreaterThan(0);
@@ -80,17 +119,22 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS.Person.JSON
         public async Task
             UpdatePerson_ShouldReturnUpdatedPerson()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
 
             _person.LastName = "Benedict Torvalds";
             
             var response = await 
                 _httpClient
-                .PutAsJsonAsync
-                ("api/person/v1",_person);
+                .PutAsync
+                ("api/person/v1",XmlHelper
+                .SerizlizeToXml(_person));
             response.EnsureSuccessStatusCode();
 
-            var updated = await response.Content
-                .ReadFromJsonAsync<PersonDTO>();
+            var updated = await XmlHelper
+                .DeserializeFromXmlAsync<PersonDTO>
+                (response);
 
             updated.Should().NotBeNull();
             updated.Id.Should().BeGreaterThan(0);
@@ -109,12 +153,16 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS.Person.JSON
         public async Task
             DisablePersonById_ShouldReturnDisablePerson()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
             var response = await _httpClient
                 .PatchAsync($"api/person/v1/" +
                 $"{_person.Id}", null);
             response.EnsureSuccessStatusCode();
-            var disabled = await response.Content
-                .ReadFromJsonAsync<PersonDTO>();
+            var disabled = await XmlHelper
+                .DeserializeFromXmlAsync<PersonDTO>
+                (response);
             disabled.Should().NotBeNull();
             disabled.Id.Should().BeGreaterThan(0);
             disabled.FirstName.Should().Be
@@ -132,15 +180,19 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS.Person.JSON
         public async Task
             GetPersonById_ShouldReturnPerson()
         {
-            
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
+
             var response = await
                 _httpClient.GetAsync
           ($"api/person/v1/{_person.Id}");
 
             response.EnsureSuccessStatusCode();
 
-            var found = await response.Content
-                .ReadFromJsonAsync<PersonDTO>();
+            var found = await XmlHelper
+                .DeserializeFromXmlAsync<PersonDTO>
+                (response);
 
             found.Should().NotBeNull();
             found.Id.Should().Be(_person.Id);
@@ -158,6 +210,9 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS.Person.JSON
         public async Task
             DeletePersonById_SHouldReturnNoContent()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
             var response = await 
                 _httpClient
                 .DeleteAsync($"api/person/v1/" +
@@ -170,15 +225,19 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS.Person.JSON
         public async Task
             FindAllPerson_ShouldListOfPerson()
         {
+            _httpClient.DefaultRequestHeaders
+                .Authorization = new AuthenticationHeaderValue
+                ("Bearer", _token?.AccessToken);
             var response = await
                 _httpClient
                 .GetAsync("api/person/v1/asc/10/1");
 
             response.EnsureSuccessStatusCode();
 
-            var page = await response.Content
-                .ReadFromJsonAsync
-                <PagedSearchDTO<PersonDTO>>();
+            var page = await XmlHelper
+                .DeserializeFromXmlAsync 
+                < PagedSearchDTO < PersonDTO >>
+                (response);
             page.Should().NotBeNull();
             page.CurrentPage.Should().Be(1);
             var list = page.List;
@@ -199,7 +258,6 @@ namespace PrimeiroProjeto.Tests.IntegrationTests.CORS.Person.JSON
                 ("15th Floor");
             fourth.Enabled.Should().BeTrue();
             fourth.Gender.Should().Be("Male");
-
             page.CurrentPage.Should()
                 .BeGreaterThan(0);
             page.TotalResult.Should()
