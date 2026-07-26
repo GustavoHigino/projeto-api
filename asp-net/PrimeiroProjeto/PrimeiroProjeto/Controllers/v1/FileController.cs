@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrimeiroProjeto.Data.DTO.V1;
 using PrimeiroProjeto.Services;
 
@@ -6,6 +7,7 @@ namespace PrimeiroProjeto.Controllers.v1
 {
     [ApiController]
     [Route("api/[controller]/v1")]
+    [Authorize("Bearer")]
     public class FileController : ControllerBase
     {
         private readonly IFileServices _fileServices;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ namespace PrimeiroProjeto.Controllers.v1
 {
     [ApiController]
     [Route("api/[controller]/v1")]
+    [Authorize("Bearer")]
     //[EnableCors("LocalPolicy")]
     public class PersonController : ControllerBase
     {

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PrimeiroProjeto.Controllers.v1
 {
     [ApiController]
     [Route("api/[Controller]/v1")]
+    [Authorize("Bearer")]
     public class TestLogsController : ControllerBase
     {
         private readonly ILogger<TestLogsController>

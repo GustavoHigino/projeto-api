@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrimeiroProjeto.Data.DTO.V1;
 using PrimeiroProjeto.Services;
 using System.Text.Json;
@@ -7,6 +8,7 @@ namespace PrimeiroProjeto.Controllers.v1
 {
     [ApiController]
     [Route("api/[controller]/v1")]
+    [Authorize("Bearer")]
     public class EmailController : ControllerBase
     {
         private readonly IEmailService _emailService;

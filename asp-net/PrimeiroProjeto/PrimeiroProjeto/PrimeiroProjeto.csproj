@@ -7,12 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\..\..\..\..\..\..\downloads\V7__Create_Table_Users.sql" Link="db\migrations\V7__Create_Table_Users.sql" />
+    <None Include="..\..\..\..\..\..\..\..\downloads\V8__Insert_Data_In_Users.sql" Link="db\dataset\V8__Insert_Data_In_Users.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="CsvHelper" Version="33.1.0" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
     <PackageReference Include="Evolve" Version="3.3.0-alpha1" />
     <PackageReference Include="MailKit" Version="4.17.0" />
     <PackageReference Include="Mapster" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Xml.Extensions" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
