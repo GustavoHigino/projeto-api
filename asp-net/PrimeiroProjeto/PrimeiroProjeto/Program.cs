@@ -97,8 +97,10 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
-app.UseHttpsRedirection();//first
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();//first
+}
 
 
 app.UseRouting();//second
@@ -113,4 +115,8 @@ app.UseHATEOASRoutes();
 app.UseSwaggerSpecification();
 app.UseScalarConfiguration();
 
-app.Run();
+
+var port = Environment.GetEnvironmentVariable
+    ("PORT") ?? "8080";
+app.Run($"http://*:{port}");
+//app.Run();

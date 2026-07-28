@@ -1,0 +1,22 @@
+services:
+  primeiro-projeto:
+    image: gustavohigino/primeiro-projeto:latest
+    build:
+      context: .
+      dockerfile: PrimeiroProjeto/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MSSQLServerSQLConnection__MSSQLServerSQLConnectionString=Data Source=host.docker.internal,1433;Initial Catalog=asp_net_10_gustavo;User Id=sa;Password=@Admin123;TrustServerCertificate=true;
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    networks:
+      - gustavo-network
+networks:
+  gustavo-network:
+    driver: bridge

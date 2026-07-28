@@ -2,6 +2,9 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
   <Project Path="PrimeiroProjeto.Tests/PrimeiroProjeto.Tests.csproj" Id="3ece4a6d-a3b5-4faa-a3a3-1fd1ddcc3a5f" />
   <Project Path="PrimeiroProjeto/PrimeiroProjeto.csproj" />
 </Solution>

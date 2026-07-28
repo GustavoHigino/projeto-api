@@ -1,4 +1,4 @@
-@PrimeiroProjeto_HostAddress = http://localhost:5004
+@PrimeiroProjeto_HostAddress = http://localhost:8080
 
 GET {{PrimeiroProjeto_HostAddress}}/swagger-ui/index.html
 Accept: text/html
