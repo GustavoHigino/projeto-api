@@ -2,7 +2,7 @@ name: Continuous integration Delivery and deployment with github action dotnet 1
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "section30" ]
 
 
 jobs:
