@@ -60,7 +60,7 @@ jobs:
 
     - name: Push to Docker Hub Container Registry
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/primeiro-projeto:latest -t ${{ secrets.DOCKER_USERNAME }}/primeiro-projeto:${{ github.run_id }} -f asp-net/PrimeiroProjeto/PrimeiroProjeto/Dockerfile .
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/primeiro-projeto:latest -t ${{ secrets.DOCKER_USERNAME }}/primeiro-projeto:${{ github.run_id }} -f asp-net/PrimeiroProjeto/PrimeiroProjeto/Dockerfile asp-net/PrimeiroProjeto
 
         docker push ${{ secrets.DOCKER_USERNAME }}/primeiro-projeto:latest
 
