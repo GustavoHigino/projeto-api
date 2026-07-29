@@ -58,4 +58,14 @@ jobs:
       run: docker compose build
       working-directory: asp-net/PrimeiroProjeto
 
+    - name: Push to Docker Hub Container Registry
+      run: |
+        docker tag ${{ secrets.DOCKER_USERNAME }}/primeiro-projeto:latest ${{ secrets.DOCKER_USERNAME }}/primeiro-projeto:${{github.run_id}}
+
+        docker push ${{ secrets.DOCKER_USERNAME }}/primeiro-projeto:latest
+
+        docker push ${{ secrets.DOCKER_USERNAME }}/primeiro-projeto:${{github.run_id}}
+
+      
+
 
