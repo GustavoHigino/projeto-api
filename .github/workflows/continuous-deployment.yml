@@ -43,19 +43,19 @@ jobs:
 
     - name: Restore Dependencies
       run: dotnet restore PrimeiroProjeto.slnx
-      working-directory: D:/GUSTAVO/Codigos/MicrosoftVisualStudio/API2/projeto-api/asp-net/PrimeiroProjeto
+      working-directory: asp-net/PrimeiroProjeto
 
     - name: Build ASP.NET 10 App
       run: dotnet build PrimeiroProjeto.slnx --configuration Release --no-restore
-      working-directory: D:/GUSTAVO/Codigos/MicrosoftVisualStudio/API2/projeto-api/asp-net/PrimeiroProjeto
+      working-directory: asp-net/PrimeiroProjeto
 
 
     - name: Test ASP.NET 10 App
       run: dotnet test PrimeiroProjeto.slnx --configuration Release --no-build --logger "console;verbosity=detailed"
-      working-directory: D:/GUSTAVO/Codigos/MicrosoftVisualStudio/API2/projeto-api/asp-net/PrimeiroProjeto
+      working-directory: asp-net/PrimeiroProjeto
 
     - name: Docker Compose Build
       run: docker compose build
-      working-directory: D:/GUSTAVO/Codigos/MicrosoftVisualStudio/API2/projeto-api/asp-net/PrimeiroProjeto
+      working-directory: asp-net/PrimeiroProjeto
 
 
